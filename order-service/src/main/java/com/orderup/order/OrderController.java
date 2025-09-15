@@ -11,17 +11,30 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
     private final OrderProducer producer;
-    public OrderController(OrderProducer producer){ this.producer = producer; }
+    private final MenuClient menuClient;
 
-    public static class CreateOrderRequest { public String userId; public List<OrderItem> items; }
+    public OrderController(OrderProducer producer, MenuClient menuClient) {
+        this.producer = producer;
+        this.menuClient = menuClient;
+    }
+
+    public static class CreateOrderRequest {
+        public String userId;
+        public List<OrderItem> items;
+    }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateOrderRequest req){
-        if(req==null || req.userId==null || req.items==null || req.items.isEmpty()) return ResponseEntity.badRequest().body("Invalid order");
-        for(OrderItem it : req.items){
-            if(it.getMenuId()==null || it.getQuantity()<=0) return ResponseEntity.badRequest().body("Invalid item");
-            if(!MenuController.contains(it.getMenuId())) return ResponseEntity.badRequest().body("Unknown menuId:"+it.getMenuId());
+    public ResponseEntity<?> create(@RequestBody CreateOrderRequest req) {
+        if (req == null || req.userId == null || req.items == null || req.items.isEmpty())
+            return ResponseEntity.badRequest().body("Invalid order");
+
+        for (OrderItem it : req.items) {
+            if (it.getMenuId() == null || it.getQuantity() <= 0)
+                return ResponseEntity.badRequest().body("Invalid item");
+            if (!menuClient.isValidMenuId(it.getMenuId()))
+                return ResponseEntity.badRequest().body("Unknown menuId:" + it.getMenuId());
         }
+
         OrderPlaced order = new OrderPlaced(req.userId, req.items);
         producer.publish(order);
         return ResponseEntity.status(201).body(order);
