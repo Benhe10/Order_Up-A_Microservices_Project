@@ -39,7 +39,7 @@ body (JSON):
 {
   "userId": "customer1",
   "items": [
-    { "menuId": "salad", "quantity": 1 },
+   { "menuId": "salad", "quantity": 1 },
     { "menuId": "cola", "quantity": 1 }
   ]
 }
