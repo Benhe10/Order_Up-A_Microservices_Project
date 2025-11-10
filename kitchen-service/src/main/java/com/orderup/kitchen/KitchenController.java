@@ -1,17 +1,29 @@
 package com.orderup.kitchen;
 
+import com.orderup.common.OrderPlaced;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/kitchen/orders")
+@RequestMapping("/api/kitchen")
 public class KitchenController {
-    @GetMapping
-    public ResponseEntity<?> list(){ return ResponseEntity.ok(OrderListener.listAll()); }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable String id){ var r = OrderListener.get(id); return r==null? ResponseEntity.notFound().build(): ResponseEntity.ok(r); }
+    private final KitchenStore store;
 
-    @PostMapping("/{id}/complete")
-    public ResponseEntity<?> complete(@PathVariable String id){ var r = OrderListener.complete(id); return r==null? ResponseEntity.notFound().build(): ResponseEntity.ok(r); }
+    public KitchenController(KitchenStore store) {
+        this.store = store;
+    }
+
+    @GetMapping("/orders")
+    public List<OrderPlaced> all() {
+        return store.getOrders();
+    }
+
+    @PostMapping("/orders/{id}/complete")
+    public ResponseEntity<?> complete(@PathVariable("id") String id) {
+        boolean ok = store.completeOrder(id);
+        return ok ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
 }
