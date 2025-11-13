@@ -2,21 +2,23 @@ package com.orderup.menu.model;
 
 import java.util.List;
 
-// Constructors
 public class MenuItem {
     private String id;
     private String name;
-    private String category;// e.g. starter, main, dessert, drink
+    private String category;
     private double price;
     private boolean vegetarian;
     private boolean vegan;
     private boolean glutenFree;
     private List<String> ingredients;
+    private String description;         // textual description of the item
+    private List<String> options;       // optional variants (used for drinks)
 
     public MenuItem() {}
 
     public MenuItem(String id, String name, String category, double price,
-                    boolean vegetarian, boolean vegan, boolean glutenFree, List<String> ingredients) {
+                    boolean vegetarian, boolean vegan, boolean glutenFree,
+                    List<String> ingredients, String description, List<String> options) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -25,9 +27,11 @@ public class MenuItem {
         this.vegan = vegan;
         this.glutenFree = glutenFree;
         this.ingredients = ingredients;
+        this.description = description;
+        this.options = options;
     }
 
-    // Getters and Setters
+    // getters & setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -51,4 +55,10 @@ public class MenuItem {
 
     public List<String> getIngredients() { return ingredients; }
     public void setIngredients(List<String> ingredients) { this.ingredients = ingredients; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public List<String> getOptions() { return options; }
+    public void setOptions(List<String> options) { this.options = options; }
 }

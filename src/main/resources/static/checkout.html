@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Order Up! — Checkout</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+<header class="header">
+    <h1>Order Up!</h1>
+    <a class="checkout-btn" href="/">Back to menu</a>
+</header>
+
+<main class="checkout-container">
+    <div class="checkout-title">This is your order</div>
+
+    <div id="cartList"></div>
+
+    <div style="margin-top:14px;">
+        <div class="small-note">Global comment / preferences for kitchen:</div>
+        <textarea id="globalComment" class="desc" placeholder="Extra napkins, allergies, or other instructions..."></textarea>
+
+        <div style="margin-top:10px;">
+            <label for="customerName" class="small-note">Your name (required):</label><br/>
+            <input id="customerName" class="qty" type="text" placeholder="Enter name to put on the order" />
+            <div id="nameValidation" class="small-note" style="color:crimson; display:none; margin-top:6px;">Please enter your name to finalize the order.</div>
+        </div>
+
+        <button id="finalizeBtn" class="finalize-btn" disabled>Finalize Order</button>
+        <div id="result" style="margin-top:10px;"></div>
+    </div>
+</main>
+
+<script src="/js/checkout.js"></script>
+</body>
+</html>

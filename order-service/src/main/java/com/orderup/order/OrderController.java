@@ -4,10 +4,12 @@ import com.orderup.common.OrderItem;
 import com.orderup.common.OrderPlaced;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
