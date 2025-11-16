@@ -1,4 +1,8 @@
-// app.js - fetches /menu and builds category dropdowns + add-to-cart
+// src/main/resources/static/js/app.js
+// Menu page: fetch /menu and build category dropdowns + add-to-cart
+// - Inserts ingredients & allergies in the item card
+// - Computes and updates checkout total badge
+
 const CATEGORIES = [
   { key: "Starter", label: "Starters" },
   { key: "Main", label: "Main course" },
@@ -7,6 +11,7 @@ const CATEGORIES = [
 ];
 
 const STORAGE_KEY = "orderup_cart_v1";
+const MENU_MAP_KEY = "orderup_menu_map_v1";
 
 function readCart() {
   try {
@@ -17,34 +22,35 @@ function readCart() {
     return { items: [] };
   }
 }
-
 function saveCart(cart) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   updateCartBadge();
+  updateCheckoutTotal();
 }
 
 function updateCartBadge() {
   const cart = readCart();
-  const count = cart.items.reduce((s, it) => s + (it.quantity || 0), 0);
+  const count = cart.items.reduce((s, it) => s + (it.quantity || 1), 0);
   const badge = document.getElementById("cartCount");
   if (badge) badge.textContent = count;
 }
 
 function makeId() {
   if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
-  return Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e6).toString(36);
+  return Date.now().toString(36) + "-" + Math.floor(Math.random()*1e6).toString(36);
 }
 
-// add single unit as independent cart entry, store selectedOption for drinks
-function addSingleToCart(menuItem, selectedOption) {
+function addSingleToCart(menuItem, quantity = 1) {
   const cart = readCart();
-  cart.items.push({
-    id: makeId(),
-    menuId: menuItem.id,
-    quantity: 1,
-    removedIngredients: [],
-    selectedOption: selectedOption || null
-  });
+  for (let i = 0; i < quantity; i++) {
+    cart.items.push({
+      id: makeId(),
+      menuId: menuItem.id,
+      quantity: 1,
+      removedIngredients: [],
+      description: ""
+    });
+  }
   saveCart(cart);
 }
 
@@ -90,10 +96,7 @@ function createCategoryCard(label, items) {
 
   items.forEach(it => {
     const container = document.createElement("div");
-    container.style.width = "100%";
-
-    const row = document.createElement("div");
-    row.className = "item-row";
+    container.className = "item-row item-container";
 
     const left = document.createElement("div");
     left.className = "item-left";
@@ -104,43 +107,49 @@ function createCategoryCard(label, items) {
 
     const meta = document.createElement("div");
     meta.className = "item-meta";
-    const priceText = (typeof it.price === "number") ? `${it.price.toFixed(2)} €` : (it.price || "");
-    meta.textContent = `${it.category || ""} • ${priceText}`;
-
-    // description about the item (static, shown both in menu and checkout)
-    const desc = document.createElement("div");
-    desc.className = "small-note";
-    desc.style.marginTop = "6px";
-    desc.textContent = it.description || "";
+    meta.textContent = `${it.category} • ${Number(it.price).toFixed(2)} €`;
 
     left.appendChild(name);
     left.appendChild(meta);
-    left.appendChild(desc);
 
-    row.appendChild(left);
+    if (it.description) {
+      const desc = document.createElement("div");
+      desc.className = "small-note";
+      desc.textContent = it.description;
+      desc.style.marginTop = "6px";
+      left.appendChild(desc);
+    }
 
+    // Ingredients inside same card
+    if (it.ingredients && it.ingredients.length) {
+      const ing = document.createElement("div");
+      ing.className = "item-ingredients";
+      ing.textContent = `Ingredients: ${it.ingredients.join(", ")}`;
+      ing.style.marginTop = "8px";
+      left.appendChild(ing);
+    }
+
+    // Allergies inside same card (if any)
+    if (it.allergies && it.allergies.length) {
+      const all = document.createElement("div");
+      all.className = "item-allergies";
+      all.textContent = `Allergies: ${it.allergies.join(", ")}`;
+      all.style.marginTop = "6px";
+      all.style.color = "#b22222";
+      left.appendChild(all);
+    }
+
+    container.appendChild(left);
+
+    // right controls
     const right = document.createElement("div");
     right.className = "controls";
 
-    // qty
     const qty = document.createElement("input");
     qty.className = "qty";
     qty.type = "number";
     qty.min = 1;
     qty.value = 1;
-
-    // if item has options (drinks), create a select
-    let optionSelect = null;
-    if (it.options && Array.isArray(it.options) && it.options.length > 0) {
-      optionSelect = document.createElement("select");
-      optionSelect.style.marginRight = "8px";
-      it.options.forEach(opt => {
-        const o = document.createElement("option");
-        o.value = opt;
-        o.textContent = opt;
-        optionSelect.appendChild(o);
-      });
-    }
 
     const addBtn = document.createElement("button");
     addBtn.className = "add-btn";
@@ -148,27 +157,15 @@ function createCategoryCard(label, items) {
 
     addBtn.addEventListener("click", () => {
       const q = parseInt(qty.value, 10) || 1;
-      const selectedOption = optionSelect ? optionSelect.value : null;
-      for (let i = 0; i < q; i++) addSingleToCart(it, selectedOption);
+      addSingleToCart(it, q);
       addBtn.textContent = "Added";
-      setTimeout(() => addBtn.textContent = "Add to cart", 800);
+      setTimeout(() => addBtn.textContent = "Add to cart", 700);
     });
 
-    if (optionSelect) right.appendChild(optionSelect);
     right.appendChild(qty);
     right.appendChild(addBtn);
+    container.appendChild(right);
 
-    row.appendChild(right);
-
-    // show ingredients as a simple small-note (not editable here)
-    const ing = document.createElement("div");
-    ing.style.fontSize = "12px";
-    ing.style.opacity = 0.9;
-    ing.textContent = (it.ingredients && it.ingredients.length) ? `Ingredients: ${it.ingredients.join(", ")}` : "";
-    ing.style.marginTop = "8px";
-
-    container.appendChild(row);
-    container.appendChild(ing);
     list.appendChild(container);
   });
 
@@ -180,16 +177,11 @@ function createCategoryCard(label, items) {
 
   card.appendChild(header);
   card.appendChild(list);
-
   return card;
 }
 
 async function loadMenu() {
   const el = document.getElementById("categories");
-  if (!el) {
-    console.error("Missing #categories element in index.html");
-    return;
-  }
   el.innerHTML = "";
   const loading = document.createElement("p");
   loading.className = "loading";
@@ -200,8 +192,12 @@ async function loadMenu() {
     const res = await fetch("/menu");
     if (!res.ok) throw new Error("Failed to fetch menu: " + res.status);
     const menu = await res.json();
-    el.innerHTML = "";
 
+    // cache menu map for checkout and totals
+    const map = {}; menu.forEach(i => map[i.id] = i);
+    localStorage.setItem(MENU_MAP_KEY, JSON.stringify(map));
+
+    el.innerHTML = "";
     const grouped = groupMenuByCategory(menu);
     CATEGORIES.forEach(cat => {
       const items = grouped[cat.key] || [];
@@ -210,13 +206,38 @@ async function loadMenu() {
     });
 
     updateCartBadge();
+    updateCheckoutTotal();
   } catch (err) {
     el.innerHTML = `<p class="loading">Error loading menu: ${err.message}</p>`;
     console.error(err);
   }
 }
 
+function computeCartTotal() {
+  const cart = readCart();
+  let total = 0;
+  try {
+    const raw = localStorage.getItem(MENU_MAP_KEY);
+    const menuMap = raw ? JSON.parse(raw) : {};
+    for (const entry of cart.items) {
+      const item = menuMap[entry.menuId];
+      if (item && item.price) total += Number(item.price) * (entry.quantity || 1);
+    }
+  } catch (e) {
+    console.warn("Could not compute total:", e);
+  }
+  return total;
+}
+
+function updateCheckoutTotal() {
+  const el = document.getElementById("checkoutTotal");
+  if (!el) return;
+  const total = computeCartTotal();
+  el.textContent = `${Number(total).toFixed(2)} €`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadMenu();
   updateCartBadge();
+  updateCheckoutTotal();
 });

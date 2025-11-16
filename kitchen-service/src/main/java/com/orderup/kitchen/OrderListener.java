@@ -16,6 +16,6 @@ public class OrderListener {
     @RabbitListener(queues = RabbitConfig.ORDERS_QUEUE)
     public void onOrderPlaced(OrderPlaced order) {
         store.addOrder(order);
-        System.out.println("Kitchen received order: " + order.getOrderId() + " comment: " + order.getComment());
+        System.out.println("Kitchen received order: " + order.getOrderId() + " comment: " + order.getComment() + " total: " + order.getTotal());
     }
 }

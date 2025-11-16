@@ -25,6 +25,7 @@ public class OrderController {
         public String userId;
         public List<OrderItem> items;
         public String comment;
+        public double total;
     }
 
     @PostMapping
@@ -40,12 +41,13 @@ public class OrderController {
             if(!menuMap.containsKey(it.getMenuId()))
                 return ResponseEntity.badRequest().body("Unknown menuId:"+it.getMenuId());
 
-            // validate removedIngredients if provided
+            // validate removedIngredients
             if(it.getRemovedIngredients()!=null && !it.getRemovedIngredients().isEmpty()){
                 Object ingrObj = menuMap.get(it.getMenuId()).get("ingredients");
                 if(ingrObj instanceof List<?>){
                     List<?> available = (List<?>) ingrObj;
-                    for(String rem : it.getRemovedIngredients()){
+                    for(Object remObj : it.getRemovedIngredients()){
+                        String rem = String.valueOf(remObj);
                         if(!available.contains(rem)){
                             return ResponseEntity.badRequest().body("Invalid removed ingredient '" + rem + "' for menuId: " + it.getMenuId());
                         }
@@ -54,8 +56,9 @@ public class OrderController {
             }
         }
 
-        OrderPlaced order = new OrderPlaced(req.userId, req.items, req.comment);
+        OrderPlaced order = new OrderPlaced(req.userId, req.items, req.comment, req.total);
         producer.publish(order);
+
         return ResponseEntity.status(201).body(order);
     }
 }

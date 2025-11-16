@@ -4,149 +4,228 @@ import com.orderup.menu.model.MenuItem;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 @RestController
 public class MenuController {
 
-    // static in-memory menu used by demo
-    private static final Map<String, MenuItem> MENU = new ConcurrentHashMap<>();
+    private static final List<MenuItem> MENU = List.of(
+            // --- Starters (10) ---
+            new MenuItem("caesar_salad", "Caesar Salad", "Starter", 8.49,
+                    false, false, true,
+                    List.of("lettuce", "croutons", "parmesan", "anchovy"),
+                    List.of("gluten", "milk", "fish"),
+                    "Classic Caesar with anchovy dressing and parmesan"),
+            new MenuItem("bruschetta", "Bruschetta", "Starter", 7.50,
+                    true, true, false,
+                    List.of("tomato", "basil", "olive oil", "bread"),
+                    List.of("gluten"),
+                    "Toasted bread topped with tomato, basil and olive oil"),
+            new MenuItem("spring_rolls", "Spring Rolls", "Starter", 6.99,
+                    true, false, true,
+                    List.of("cabbage", "carrot", "soy sauce", "wrapper"),
+                    List.of("soy","gluten"),
+                    "Crispy vegetable spring rolls with dipping sauce"),
+            new MenuItem("garlic_shrimp", "Garlic Shrimp", "Starter", 9.50,
+                    false, false, true,
+                    List.of("shrimp", "garlic", "butter"),
+                    List.of("shellfish","milk"),
+                    "Pan-fried shrimp in garlic butter"),
+            new MenuItem("caprese", "Caprese", "Starter", 8.00,
+                    true, true, false,
+                    List.of("tomato","mozzarella","basil"),
+                    List.of("milk"),
+                    "Sliced tomato, fresh mozzarella and basil"),
+            new MenuItem("stuffed_mushrooms", "Stuffed Mushrooms", "Starter", 7.25,
+                    true, false, true,
+                    List.of("mushroom","cheese","breadcrumbs"),
+                    List.of("milk","gluten"),
+                    "Baked mushrooms filled with cheese and herbs"),
+            new MenuItem("onion_rings", "Onion Rings", "Starter", 5.50,
+                    true, true, false,
+                    List.of("onion","batter"),
+                    List.of("gluten"),
+                    "Crispy battered onion rings"),
+            new MenuItem("nachos", "Nachos", "Starter", 7.99,
+                    true, false, false,
+                    List.of("corn chips","cheese","jalapeno"),
+                    List.of("milk"),
+                    "Tortilla chips topped with melted cheese and jalapenos"),
+            new MenuItem("hummus_pita", "Hummus & Pita", "Starter", 6.75,
+                    true, true, false,
+                    List.of("chickpeas","tahini","pita"),
+                    List.of("gluten","sesame"),
+                    "Creamy hummus served with warm pita"),
+            new MenuItem("avocado_toast", "Avocado Toast", "Starter", 7.95,
+                    true, true, false,
+                    List.of("avocado","bread","lemon"),
+                    List.of("gluten"),
+                    "Smashed avocado on toasted bread"),
 
-    static {
-        // Starters
-        MENU.put("bruschetta", new MenuItem(
-                "bruschetta", "Bruschetta", "Starter", 6.50,
-                true, false, false,
-                Arrays.asList("bread", "tomato", "garlic", "basil"),
-                "Grilled bread topped with diced tomato, garlic and basil.",
-                null
-        ));
-        MENU.put("springrolls", new MenuItem(
-                "springrolls", "Spring Rolls", "Starter", 7.00,
-                true, true, false,
-                Arrays.asList("rice paper", "vegetables"),
-                "Crispy vegetable spring rolls served with sweet chili dip.",
-                null
-        ));
-        MENU.put("caesarsalad", new MenuItem(
-                "caesarsalad", "Caesar Salad", "Starter", 8.50,
-                false, false, true,
-                Arrays.asList("lettuce", "croutons", "parmesan", "anchovy"),
-                "Classic Caesar salad with crunchy croutons and parmesan.",
-                null
-        ));
-        MENU.put("garlicbread", new MenuItem(
-                "garlicbread", "Garlic Bread", "Starter", 5.00,
-                true, false, false,
-                Arrays.asList("bread", "garlic", "butter"),
-                "Warm garlic bread, a perfect starter to share.",
-                null
-        ));
+            // --- Mains (10) ---
+            new MenuItem("margherita", "Margherita Pizza", "Main", 12.99,
+                    true, false, false,
+                    List.of("tomato","mozzarella","basil","dough"),
+                    List.of("milk","gluten"),
+                    "Classic pizza with tomato sauce and mozzarella"),
+            new MenuItem("classic_burger", "Classic Burger", "Main", 11.50,
+                    false, false, false,
+                    List.of("beef patty","bun","lettuce","tomato","onion"),
+                    List.of("gluten"),
+                    "Beef burger with lettuce, tomato and onion"),
+            new MenuItem("veggie_burger", "Veggie Burger", "Main", 10.50,
+                    true, true, false,
+                    List.of("veggie patty","bun","lettuce","tomato"),
+                    List.of("gluten","soy"),
+                    "Grilled vegetable patty with fresh toppings"),
+            new MenuItem("spaghetti_bolognese", "Spaghetti Bolognese", "Main", 13.75,
+                    false, false, false,
+                    List.of("spaghetti","beef","tomato sauce","onion"),
+                    List.of("gluten"),
+                    "Slow-cooked beef ragu with spaghetti"),
+            new MenuItem("grilled_salmon", "Grilled Salmon", "Main", 15.00,
+                    false, false, true,
+                    List.of("salmon","lemon","herbs"),
+                    List.of("fish"),
+                    "Seasoned grilled salmon with lemon"),
+            new MenuItem("chicken_curry", "Chicken Curry", "Main", 13.25,
+                    false, false, true,
+                    List.of("chicken","curry sauce","peanut"),
+                    List.of("peanut"),
+                    "Spicy chicken curry (contains peanuts)"),
+            new MenuItem("steak_fries", "Steak & Fries", "Main", 17.50,
+                    false, false, true,
+                    List.of("beef steak","potato","butter"),
+                    List.of("milk"),
+                    "Grilled steak with fries and herb butter"),
+            new MenuItem("tofu_stirfry", "Tofu Stir-Fry", "Main", 12.75,
+                    true, true, true,
+                    List.of("tofu","soy sauce","vegetables"),
+                    List.of("soy"),
+                    "Wok-fried tofu with mixed vegetables"),
+            new MenuItem("seafood_paella", "Seafood Paella", "Main", 16.50,
+                    false, false, true,
+                    List.of("rice","shrimp","mussels","squid"),
+                    List.of("shellfish","fish"),
+                    "Saffron rice with mixed seafood"),
+            new MenuItem("carbonara", "Spaghetti Carbonara", "Main", 13.00,
+                    false, false, false,
+                    List.of("spaghetti","egg","pancetta","parmesan"),
+                    List.of("egg","milk","gluten"),
+                    "Creamy carbonara with egg and pancetta"),
 
-        // Mains
-        MENU.put("margherita", new MenuItem(
-                "margherita", "Margherita Pizza", "Main", 12.99,
-                true, false, false,
-                Arrays.asList("dough", "tomato", "mozzarella", "basil"),
-                "Classic pizza with tomato sauce, mozzarella and fresh basil.",
-                null
-        ));
-        MENU.put("spaghetti", new MenuItem(
-                "spaghetti", "Spaghetti Bolognese", "Main", 13.50,
-                false, false, false,
-                Arrays.asList("spaghetti", "beef", "tomato", "onion"),
-                "Homemade Bolognese sauce over al dente spaghetti.",
-                null
-        ));
-        MENU.put("chickenparma", new MenuItem(
-                "chickenparma", "Chicken Parmigiana", "Main", 14.90,
-                false, false, false,
-                Arrays.asList("chicken", "breadcrumbs", "tomato", "cheese"),
-                "Breaded chicken breast baked with tomato sauce and cheese.",
-                null
-        ));
-        MENU.put("vegpasta", new MenuItem(
-                "vegpasta", "Vegetable Pasta", "Main", 11.00,
-                true, true, false,
-                Arrays.asList("pasta", "seasonal vegetables", "olive oil"),
-                "Pasta with sautéed seasonal vegetables and olive oil.",
-                null
-        ));
+            // --- Desserts (10) ---
+            new MenuItem("choc_cake", "Chocolate Cake", "Dessert", 6.99,
+                    true, true, false,
+                    List.of("flour","cocoa","egg","milk"),
+                    List.of("gluten","egg","milk"),
+                    "Rich chocolate cake with chocolate glaze"),
+            new MenuItem("ice_cream", "Ice Cream", "Dessert", 4.50,
+                    true, false, true,
+                    List.of("milk","sugar"),
+                    List.of("milk"),
+                    "Creamy ice cream — ask for flavors"),
+            new MenuItem("banana_split", "Banana Split", "Dessert", 6.50,
+                    true, false, false,
+                    List.of("banana","ice cream","chocolate"),
+                    List.of("milk"),
+                    "Banana with scoops of ice cream and toppings"),
+            new MenuItem("tiramisu", "Tiramisu", "Dessert", 6.75,
+                    true, false, false,
+                    List.of("mascarpone","egg","coffee","ladyfingers"),
+                    List.of("milk","egg","gluten"),
+                    "Classic Italian tiramisu"),
+            new MenuItem("fruit_salad", "Fruit Salad", "Dessert", 5.00,
+                    true, true, true,
+                    List.of("mixed fruit","mint"),
+                    List.of(),
+                    "Fresh seasonal fruit"),
+            new MenuItem("cheesecake", "Cheesecake", "Dessert", 6.99,
+                    true, false, false,
+                    List.of("cream cheese","sugar","crust"),
+                    List.of("milk","gluten"),
+                    "Creamy baked cheesecake"),
+            new MenuItem("creme_brulee", "Crème Brûlée", "Dessert", 6.50,
+                    true, false, true,
+                    List.of("cream","egg","sugar"),
+                    List.of("milk","egg"),
+                    "Vanilla custard with caramelized sugar"),
+            new MenuItem("apple_pie", "Apple Pie", "Dessert", 5.75,
+                    true, true, false,
+                    List.of("apple","flour","butter"),
+                    List.of("gluten","milk"),
+                    "Warm apple pie with flaky crust"),
+            new MenuItem("panna_cotta", "Panna Cotta", "Dessert", 6.25,
+                    true, false, true,
+                    List.of("cream","vanilla"),
+                    List.of("milk"),
+                    "Silky vanilla panna cotta"),
+            new MenuItem("lemon_tart", "Lemon Tart", "Dessert", 6.00,
+                    true, true, false,
+                    List.of("lemon","egg","crust"),
+                    List.of("egg","gluten"),
+                    "Tangy lemon tart with crisp pastry"),
 
-        // Desserts
-        MENU.put("chocolatecake", new MenuItem(
-                "chocolatecake", "Chocolate Cake", "Dessert", 6.99,
-                true, true, true,
-                Arrays.asList("chocolate", "flour", "sugar"),
-                "Rich chocolate cake served with a scoop of vanilla ice cream.",
-                null
-        ));
-        MENU.put("bananasplit", new MenuItem(
-                "bananasplit", "Banana Split", "Dessert", 7.50,
-                true, false, false,
-                Arrays.asList("banana", "ice cream", "syrup"),
-                "Classic banana split with ice cream and toppings.",
-                null
-        ));
-        MENU.put("cheesecake", new MenuItem(
-                "cheesecake", "Cheesecake", "Dessert", 6.50,
-                true, false, false,
-                Arrays.asList("cream cheese", "crust", "sugar"),
-                "Creamy cheesecake with a buttery crust.",
-                null
-        ));
-        MENU.put("icecream", new MenuItem(
-                "icecream", "Ice Cream Scoop", "Dessert", 3.00,
-                true, true, true,
-                Arrays.asList("milk", "sugar"),
-                "Single scoop of seasonal ice cream.",
-                null
-        ));
-
-        // Drinks (with options; no ingredient removal allowed for drinks)
-        MENU.put("cola", new MenuItem(
-                "cola", "Coca Cola", "Drink", 2.99,
-                true, false, true,
-                Arrays.asList("carbonated water", "sugar", "caramel color"),
-                "Carbonated sugary drink.",
-                Arrays.asList("Regular", "Diet", "Zero")
-        ));
-        MENU.put("fanta", new MenuItem(
-                "fanta", "Fanta", "Drink", 2.79,
-                true, false, true,
-                Arrays.asList("carbonated water", "orange flavor"),
-                "Orange-flavoured fizzy drink.",
-                Arrays.asList("Regular", "Zero")
-        ));
-        MENU.put("sprite", new MenuItem(
-                "sprite", "Sprite", "Drink", 2.79,
-                true, false, true,
-                Arrays.asList("carbonated water", "lemon-lime flavor"),
-                "Clear lemon-lime soda.",
-                Arrays.asList("Regular", "Zero")
-        ));
-        MENU.put("water", new MenuItem(
-                "water", "Mineral Water", "Drink", 1.99,
-                true, true, true,
-                Collections.singletonList("water"),
-                "Still mineral water.",
-                Arrays.asList("Still", "Sparkling")
-        ));
-    }
+            // --- Drinks (10) ---
+            new MenuItem("cola", "Coca Cola", "Drink", 2.99,
+                    true, true, true,
+                    List.of("carbonated water","sugar","flavorings"),
+                    List.of(),
+                    "Carbonated sugary drink"),
+            new MenuItem("diet_coke", "Diet Coke", "Drink", 2.99,
+                    true, true, true,
+                    List.of("carbonated water","artificial sweetener","flavorings"),
+                    List.of(),
+                    "Zero-sugar cola"),
+            new MenuItem("fanta", "Fanta", "Drink", 2.99,
+                    true, true, true,
+                    List.of("carbonated water","sugar","orange flavor"),
+                    List.of(),
+                    "Orange flavored soft drink"),
+            new MenuItem("sprite", "Sprite", "Drink", 2.99,
+                    true, true, true,
+                    List.of("carbonated water","sugar","lemon-lime flavor"),
+                    List.of(),
+                    "Lemon-lime soda"),
+            new MenuItem("water", "Mineral Water", "Drink", 1.50,
+                    true, true, true,
+                    List.of("water"),
+                    List.of(),
+                    "Still or sparkling mineral water"),
+            new MenuItem("orange_juice", "Orange Juice", "Drink", 3.50,
+                    true, true, true,
+                    List.of("orange"),
+                    List.of(),
+                    "Freshly squeezed orange juice"),
+            new MenuItem("iced_tea", "Iced Tea", "Drink", 3.00,
+                    true, true, true,
+                    List.of("tea","sugar","lemon"),
+                    List.of(),
+                    "Cold brewed iced tea"),
+            new MenuItem("coffee", "Coffee", "Drink", 2.50,
+                    true, true, true,
+                    List.of("water","coffee beans", "milk"),
+                    List.of("milk"),
+                    "Hot brewed coffee (milk optional)"),
+            new MenuItem("green_tea", "Green Tea", "Drink", 2.50,
+                    true, true, true,
+                    List.of("water","green tea leaves"),
+                    List.of(),
+                    "Hot green tea"),
+            new MenuItem("sparkling_lemon", "Sparkling Lemonade", "Drink", 3.25,
+                    true, true, true,
+                    List.of("carbonated water","lemon","sugar"),
+                    List.of(),
+                    "Refreshing sparkling lemonade")
+    );
 
     @GetMapping("/menu")
-    public Collection<MenuItem> getMenu() {
-        return MENU.values();
+    public List<MenuItem> getMenu() {
+        return MENU;
     }
 
-    // helper used by OrderController to validate menuIds
-    public static boolean contains(String menuId) {
-        return MENU.containsKey(String.valueOf(menuId));
-    }
-
-    // helper to return a menu item by id (if needed)
-    public static MenuItem get(String menuId) {
-        return MENU.get(String.valueOf(menuId));
+    public static boolean contains(String id) {
+        if (id == null) return false;
+        return MENU.stream().anyMatch(i -> id.equals(i.getId()));
     }
 }

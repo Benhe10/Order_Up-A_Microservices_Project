@@ -2,7 +2,6 @@ package com.orderup.common;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class OrderPlaced {
@@ -11,15 +10,17 @@ public class OrderPlaced {
     private List<OrderItem> items;
     private String comment;
     private Instant createdAt;
+    private double total;
 
     public OrderPlaced() {}
 
-    public OrderPlaced(String userId, List<OrderItem> items, String comment) {
+    public OrderPlaced(String userId, List<OrderItem> items, String comment, double total) {
         this.orderId = UUID.randomUUID().toString();
         this.userId = userId;
         this.items = items;
         this.comment = comment;
         this.createdAt = Instant.now();
+        this.total = total;
     }
 
     public String getOrderId() { return orderId; }
@@ -37,16 +38,6 @@ public class OrderPlaced {
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof OrderPlaced)) return false;
-        OrderPlaced that = (OrderPlaced) o;
-        return Objects.equals(orderId, that.orderId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderId);
-    }
+    public double getTotal() { return total; }
+    public void setTotal(double total) { this.total = total; }
 }

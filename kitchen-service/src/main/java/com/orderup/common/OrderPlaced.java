@@ -11,15 +11,17 @@ public class OrderPlaced {
     private List<OrderItem> items;
     private String comment;
     private Instant createdAt;
+    private double total;
 
     public OrderPlaced() {}
 
-    public OrderPlaced(String userId, List<OrderItem> items, String comment) {
+    public OrderPlaced(String userId, List<OrderItem> items, String comment, double total) {
         this.orderId = UUID.randomUUID().toString();
         this.userId = userId;
         this.items = items;
         this.comment = comment;
         this.createdAt = Instant.now();
+        this.total = total;
     }
 
     public String getOrderId() { return orderId; }
@@ -36,6 +38,9 @@ public class OrderPlaced {
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public double getTotal() { return total; }
+    public void setTotal(double total) { this.total = total; }
 
     @Override
     public boolean equals(Object o) {

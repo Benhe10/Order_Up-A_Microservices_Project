@@ -22,12 +22,20 @@
         <textarea id="globalComment" class="desc" placeholder="Extra napkins, allergies, or other instructions..."></textarea>
 
         <div style="margin-top:10px;">
-            <label for="customerName" class="small-note">Your name (required):</label><br/>
-            <input id="customerName" class="qty" type="text" placeholder="Enter name to put on the order" />
+            <label for="userName" class="small-note">Your name (required):</label><br/>
+            <input id="userName" class="qty" type="text" placeholder="Enter name to put on the order" />
             <div id="nameValidation" class="small-note" style="color:crimson; display:none; margin-top:6px;">Please enter your name to finalize the order.</div>
         </div>
 
-        <button id="finalizeBtn" class="finalize-btn" disabled>Finalize Order</button>
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-top:12px;">
+            <div style="font-weight:600; display:flex; align-items:center; gap:8px;">
+                <span>Total:</span>
+                <span id="finalizeTotal">0.00 €</span>
+            </div>
+
+            <button id="finalizeBtn" class="finalize-btn" disabled>Finalize Order</button>
+        </div>
+
         <div id="result" style="margin-top:10px;"></div>
     </div>
 </main>

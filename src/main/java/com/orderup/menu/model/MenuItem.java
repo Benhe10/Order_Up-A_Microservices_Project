@@ -11,14 +11,14 @@ public class MenuItem {
     private boolean vegan;
     private boolean glutenFree;
     private List<String> ingredients;
-    private String description;         // textual description of the item
-    private List<String> options;       // optional variants (used for drinks)
+    private List<String> allergies;
+    private String description;
 
     public MenuItem() {}
 
     public MenuItem(String id, String name, String category, double price,
                     boolean vegetarian, boolean vegan, boolean glutenFree,
-                    List<String> ingredients, String description, List<String> options) {
+                    List<String> ingredients, List<String> allergies, String description) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -27,11 +27,11 @@ public class MenuItem {
         this.vegan = vegan;
         this.glutenFree = glutenFree;
         this.ingredients = ingredients;
+        this.allergies = allergies;
         this.description = description;
-        this.options = options;
     }
 
-    // getters & setters
+    // Getters & setters (Jackson needs them)
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -56,9 +56,9 @@ public class MenuItem {
     public List<String> getIngredients() { return ingredients; }
     public void setIngredients(List<String> ingredients) { this.ingredients = ingredients; }
 
+    public List<String> getAllergies() { return allergies; }
+    public void setAllergies(List<String> allergies) { this.allergies = allergies; }
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-
-    public List<String> getOptions() { return options; }
-    public void setOptions(List<String> options) { this.options = options; }
 }

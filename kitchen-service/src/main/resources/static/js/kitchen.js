@@ -41,6 +41,12 @@ function makeOrderCard(order, completed) {
   meta.className = "order-meta";
   meta.textContent = `OrderId: ${order.orderId || ""}`;
 
+  // show total
+  const totalDiv = document.createElement("div");
+  totalDiv.className = "small-note";
+  totalDiv.style.fontWeight = "600";
+  totalDiv.textContent = "Total: " + (order.total !== undefined && order.total !== null ? Number(order.total).toFixed(2) + " €" : "-");
+
   const ts = document.createElement("div");
   ts.className = "timestamp";
   ts.textContent = completed ? (order.completedAt ? isoToLocal(order.completedAt) : "Completed") : (order.createdAt ? isoToLocal(order.createdAt) : "");
@@ -50,6 +56,7 @@ function makeOrderCard(order, completed) {
 
   card.appendChild(title);
   card.appendChild(meta);
+  card.appendChild(totalDiv);
   card.appendChild(itemsHtml);
 
   if (order.comment) {
@@ -78,7 +85,7 @@ function makeOrderCard(order, completed) {
           return;
         }
 
-        // Successful server call - move card to completed column immediately
+        // Successful server call - move card to completed column
         const nowIso = new Date().toISOString();
 
         // Update local ALL_ORDERS: mark as DONE and set completedAt
