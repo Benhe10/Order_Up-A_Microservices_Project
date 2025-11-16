@@ -134,6 +134,14 @@ async function renderCart() {
     // Ingredients and checkboxes
     if (itemDef && Array.isArray(itemDef.ingredients) && itemDef.ingredients.length) {
       if (itemDef.category !== "Drink") {
+        // show "Ingredients you want to exclude" text above checkboxes
+        const header = document.createElement("div");
+        header.className = "small-note";
+        header.style.fontWeight = "600";
+        header.style.marginTop = "8px";
+        header.textContent = "Ingredients you want to exclude:";
+        left.appendChild(header);
+
         const ingWrap = document.createElement("div");
         ingWrap.className = "ingredients";
         entry.removedIngredients = entry.removedIngredients || [];
@@ -257,13 +265,16 @@ async function finalizeOrder() {
     return;
   }
 
+  // NOTE: we now read the global comment textarea that exists in checkout.html:
+  const globalCommentEl = document.getElementById("globalComment");
+  const globalComment = globalCommentEl ? (globalCommentEl.value || "").trim() : "";
+
    const payload = {
      userId: user,
      items: cart.items.map(it => ({ menuId: it.menuId, quantity: it.quantity || 1, removedIngredients: it.removedIngredients || [] })),
-     comment: (document.getElementById("orderComment") && document.getElementById("orderComment").value) || "",
+     comment: globalComment,
      total: computeCartTotal()
    };
-
 
   try {
     const res = await fetch("http://localhost:8081/api/orders", {
